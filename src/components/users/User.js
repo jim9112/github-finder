@@ -1,46 +1,33 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Repos from '../repos/Repos';
 
-export class User extends Component {
-    
-    componentDidMount() {
-        this.props.getUser(this.props.match.params.login);
-        this.props.getUserRepos(this.props.match.params.login);
-    }
-    
-    static propTypes ={
-        loading: PropTypes.bool,
-        user: PropTypes.object.isRequired,
-        repos: PropTypes.string.isRequired,
-        getUser: PropTypes.func.isRequired,
-        getUserRepos: PropTypes.func.isRequired,
-    }
+const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
+    useEffect(() => {
+        getUser(match.params.login);
+        getUserRepos(match.params.login); 
+        // eslint-disable-next-line
+    }, []);
 
+    const {
+        name,
+        blog,
+        company, 
+        avatar_url,
+        location,
+        bio,
+        login,
+        html_url,
+        followers,
+        following,
+        public_repos,
+        public_gists,
+        hireable
+    } = user;
 
-    render() {
-
-        const {
-            name,
-            blog,
-            company, 
-            avatar_url,
-            location,
-            bio,
-            login,
-            html_url,
-            followers,
-            following,
-            public_repos,
-            public_gists,
-            hireable
-        } = this.props.user;
-        
-        const {loading, repos} = this.props;
-
-        if (loading) return <Spinner />;
+    if (loading) return <Spinner />;
 
         return (<Fragment>
             <Link to='/' className='btn btn-light'>Back to Search</Link>
@@ -89,8 +76,14 @@ export class User extends Component {
             </div>
             <Repos repos={repos} />
         </Fragment>)
-        
-    }
 }
 
-export default User
+User.propTypes ={
+    loading: PropTypes.bool,
+    user: PropTypes.object.isRequired,
+    repos: PropTypes.string.isRequired,
+    getUser: PropTypes.func.isRequired,
+    getUserRepos: PropTypes.func.isRequired,
+}
+
+export default User;
